@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "CreateBuilding";
+}
+
+<h3>Create Building</h3>
+
+<div>
+    @*Create a Form with method post to send info of the view to controller. Here the user type the info*@
+    <form method="post">
+        <div class="form-group mb-3">
+            <label class="form-label text-primary">Building Name</label>
+            <input type="text" name="Building" class="form-control" placeholder="Type the name of the building">
+        </div>
+        <button type="submit" class="btn btn-primary">Create&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+    </form>
+</div>
+@*Add a message to alert that record was created*@
+@{
+    if (TempData["msg"] != null)
+    {
+        <script>alert('@TempData["msg"]')</script>
+    }
+}

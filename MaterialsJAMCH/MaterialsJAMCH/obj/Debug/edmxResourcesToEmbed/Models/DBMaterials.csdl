@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MaterialsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Buildings">
+    <Key>
+      <PropertyRef Name="PKBuilding" />
+    </Key>
+    <Property Name="PKBuilding" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Building" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Customers" Relationship="Self.FKBuilding" FromRole="Buildings" ToRole="Customers" />
+  </EntityType>
+  <EntityType Name="Customers">
+    <Key>
+      <PropertyRef Name="PKCustomer" />
+    </Key>
+    <Property Name="PKCustomer" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Customer" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="Prefix" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="FKBuilding" Type="Int32" />
+    <Property Name="Available" Type="Boolean" />
+    <NavigationProperty Name="Buildings" Relationship="Self.FKBuilding" FromRole="Customers" ToRole="Buildings" />
+    <NavigationProperty Name="PartNumbers" Relationship="Self.FKCustomer" FromRole="Customers" ToRole="PartNumbers" />
+  </EntityType>
+  <EntityType Name="PartNumbers">
+    <Key>
+      <PropertyRef Name="PKPartNumber" />
+    </Key>
+    <Property Name="PKPartNumber" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PartNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FKCustomer" Type="Int32" />
+    <Property Name="Available" Type="Boolean" />
+    <NavigationProperty Name="Customers" Relationship="Self.FKCustomer" FromRole="PartNumbers" ToRole="Customers" />
+  </EntityType>
+  <Association Name="FKBuilding">
+    <End Role="Buildings" Type="Self.Buildings" Multiplicity="0..1" />
+    <End Role="Customers" Type="Self.Customers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Buildings">
+        <PropertyRef Name="PKBuilding" />
+      </Principal>
+      <Dependent Role="Customers">
+        <PropertyRef Name="FKBuilding" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FKCustomer">
+    <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
+    <End Role="PartNumbers" Type="Self.PartNumbers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customers">
+        <PropertyRef Name="PKCustomer" />
+      </Principal>
+      <Dependent Role="PartNumbers">
+        <PropertyRef Name="FKCustomer" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="MaterialsEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Buildings" EntityType="Self.Buildings" />
+    <EntitySet Name="Customers" EntityType="Self.Customers" />
+    <EntitySet Name="PartNumbers" EntityType="Self.PartNumbers" />
+    <AssociationSet Name="FKBuilding" Association="Self.FKBuilding">
+      <End Role="Buildings" EntitySet="Buildings" />
+      <End Role="Customers" EntitySet="Customers" />
+    </AssociationSet>
+    <AssociationSet Name="FKCustomer" Association="Self.FKCustomer">
+      <End Role="Customers" EntitySet="Customers" />
+      <End Role="PartNumbers" EntitySet="PartNumbers" />
+    </AssociationSet>
+    <FunctionImport Name="SPCreateBuilding">
+      <Parameter Name="Building" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="SPCreateCustomer">
+      <Parameter Name="Customer" Mode="In" Type="String" />
+      <Parameter Name="Prefix" Mode="In" Type="String" />
+      <Parameter Name="FKBuilding" Mode="In" Type="String" />
+      <Parameter Name="Available" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="SPCreatePartNumber">
+      <Parameter Name="PartNumber" Mode="In" Type="String" />
+      <Parameter Name="FKCustomer" Mode="In" Type="Int32" />
+      <Parameter Name="Available" Mode="In" Type="Boolean" />
+    </FunctionImport>
+    <FunctionImport Name="SPGetBuildings" ReturnType="Collection(MaterialsModel.SPGetBuildings_Result)" />
+    <FunctionImport Name="SPGetPartNumbers" ReturnType="Collection(MaterialsModel.SPGetPartNumbers_Result)">
+      <Parameter Name="PartNumber" Mode="In" Type="String" />
+      <Parameter Name="Customer" Mode="In" Type="String" />
+      <Parameter Name="Available" Mode="In" Type="Boolean" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="SPGetBuildings_Result">
+    <Property Type="Int32" Name="PKBuilding" Nullable="false" />
+    <Property Type="String" Name="Building" Nullable="true" MaxLength="255" />
+  </ComplexType>
+  <ComplexType Name="SPGetPartNumbers_Result">
+    <Property Type="String" Name="PartNumber" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Customer" Nullable="true" MaxLength="255" />
+    <Property Type="String" Name="Building" Nullable="true" MaxLength="255" />
+  </ComplexType>
+</Schema>

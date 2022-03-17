@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "GetPartNumbers";
+}
+
+<h3>Show PartNumbers</h3>
+
+<div>
+    @*We create a form so that the user can filter by partNumber or by Customer*@
+    <form method="post">
+        <div class="form-group mb-3">
+            <h4>Search By:</h4>
+
+            <label class="form-label text-primary">PartNumber</label>
+            <input type="text" id="Part" name="PartNumber" class="form-control" placeholder="Type a PartNumber or characters that contains">
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label text-primary">Customer</label>
+            <input type="text" id="Cust" name="Customer" class="form-control" placeholder="Type a Customer or letter(s) that contains">
+        </div>
+        <button type="submit" class="btn btn-success">Search&nbsp;&nbsp;<span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+    </form>
+</div>
+@*We add the table that will show the information requested by the user*@
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="bg-info">
+            <tr>
+                <th>PartNumber</th>
+                <th>Customer</th>
+                <th>Building</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (System.Data.DataRow item in ViewBag.lst.Rows)
+                {
+                    <tr>
+                        <td>@item["PartNumber"]</td>
+                        <td>@item["Customer"]</td>
+                        <td>@item["Building"]</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+</div>
+
